@@ -37,7 +37,10 @@ function LoginForm(props) {
       .then(function (response) {
         console.log(response);
         if (response.status === 200) {
-          alert("succesfully login");
+          console.log('response: ');
+          console.log(response);
+          console.log(document.cookie);
+         
           setState((prevState) => ({
             ...prevState,
             successMessage: "Login successful. Redirecting to home page..",

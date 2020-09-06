@@ -1,0 +1,19 @@
+TODO: 
+User: 
+ - Pasword validity ( check if the password has length of )
+ - Save password as hash value (MD5)
+ - Use two way encryption to create a unique id for the user 
+ - User Details: 
+    - Display data score
+    - Display score period
+    - Last User Upload
+    - Leaderboard
+ - User Details Analytics
+    - Percentage of records per activity
+    - Time of date with the most records per activity 
+    - Day of week with the most records per activity 
+- Data Upload 
+    - feature of removing locations that are out of radious 
+    - 
+Administrator: 
+    - 
