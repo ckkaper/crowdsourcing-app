@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3308
--- Generation Time: Aug 30, 2020 at 09:04 AM
+-- Generation Time: Sep 06, 2020 at 11:37 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `persons`;
 CREATE TABLE IF NOT EXISTS `persons` (
-  `id` int(11) DEFAULT NULL,
+  `userid` char(60) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -41,8 +41,21 @@ CREATE TABLE IF NOT EXISTS `persons` (
 -- Dumping data for table `persons`
 --
 
-INSERT INTO `persons` (`id`, `username`, `password`, `email`, `role`) VALUES
-(1, 'kyriakos', 'kyriakos', 'kyriakos@gmail.com', 'admin');
+INSERT INTO `persons` (`userid`, `username`, `password`, `email`, `role`) VALUES
+(NULL, 'kyriakos', '6847b1d74e912415fce8a69cf7667fc5', 'kyriakos@gmail.com', 'user'),
+(NULL, 'karolos', '8aa30ea9db5021a582596bc8055649c9', 'karolos@gma.com', 'user'),
+('userId', 'username', 'hashedPassword', 'email', 'role'),
+('355eed8d834335a71fc549a7e9838f36', 'username', 'hashedPassword', 'email', 'role'),
+(NULL, 'karolos', '8aa30ea9db5021a582596bc8055649c9', 'karolos', 'user'),
+(NULL, 'porto', '71d6c631e36a3432a5899bb09c51d52a', 'porto', 'user'),
+('undefined', 'porto', '71d6c631e36a3432a5899bb09c51d52a', 'porto', 'user'),
+('undefined', 'PORNO', 'ac2153d12f000e160f8e65a4bffe53f6', 'PORNO', 'user'),
+('undefined', 'ok', '444bcb3a3fcf8389296c49467f27e1d6', 'ok', 'user'),
+('null', 'ok', '444bcb3a3fcf8389296c49467f27e1d6', 'ok', 'user'),
+('649d7e8e9448d443cb1af63e17f8d72c469e46806bd85abeb324d51e16b4', 'rolo ', 'edcc14fd81c5599dfdc3c563e6d93171', 'rolo', 'user'),
+('377cfac69b8cdad0bc2548d7cdee96e2', 'rolo', 'ee5ed5937af2624e1e06fe97aa6e9c0b', 'rolo', 'user'),
+('0e133d47d3fde70ac1551e522f0ea677', 'poker', 'de46d487ba166381e4952d3449cb4936', 'poker', 'user'),
+('3896009d3f5c428043e2a5b3b6d64042', 'koler', 'e66420906cacd12dda99108fe17db898', 'koler', 'user');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

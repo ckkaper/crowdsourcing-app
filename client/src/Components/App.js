@@ -4,6 +4,8 @@ import LoginForm from "./Login";
 import RegistrationForm from "./Register";
 import Header from "./Header";
 import Home from "./Home";
+import DataUpload from "./DataUpload";
+import PrivateRoute from "./PrivateRoute";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AlertComponent from "./AlertComponent";
 
@@ -34,9 +36,9 @@ function App() {
                 updateTitle={updateTitle}
               />
             </Route>
-            <Route path="/home">
-              <Home />
-            </Route>
+            <PrivateRoute component={Home} path="/home"/>
+
+            <PrivateRoute component={DataUpload} path="/dataUpload"/>       
           </Switch>
           <AlertComponent
             errorMessage={errorMessage}

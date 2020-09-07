@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "locations": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "required": [
+          "timestampMs",
+          "latitudeE7",
+          "longitudeE7",
+          "accuracy",
+          "velocity",
+          "heading",
+          "altitude",
+          "verticalAccuracy"
+        ],
+        "properties": {
+          "timestampMs": {
+            "type": "string",
+            "minLength": 1
+          },
+          "latitudeE7": {
+            "type": "number"
+          },
+          "longitudeE7": {
+            "type": "number"
+          },
+          "accuracy": {
+            "type": "number"
+          },
+          "velocity": {
+            "type": "number"
+          },
+          "heading": {
+            "type": "number"
+          },
+          "altitude": {
+            "type": "number"
+          },
+          "verticalAccuracy": {
+            "type": "number"
+          },
+          "activity": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "required": [
+                "timestampMs"
+              ],
+              "properties": {
+                "timestampMs": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "activity": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "minItems": 1,
+                  "items": {
+                    "required": [
+                      "type",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "confidence": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "locations"
+  ]
+}

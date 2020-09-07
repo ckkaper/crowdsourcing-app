@@ -4,10 +4,13 @@ const md5 = require('md5');
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const crypto = require('crypto');
+ 
+ 
 const { ENAMETOOLONG } = require('constants');
 // const session = require('express-session');
 
 const app = express();
+ 
 const router = express.Router({ mergeParams: true });
 const port = 3001;
 
@@ -55,8 +58,11 @@ router.post('/login', (req, res, next)=> {
     (errors, results) => {
         console.log('here')
       if (results.length > 0 ) {
-          res.cookie('username',username, {maxAge: oneDayToSeconds, httpOnly:false});
-          res.status(200).send('ok');
+    
+          const row = JSON.parse(JSON.stringify(results[0]));
+          console.log(row.userid);
+          res.locals.sessionId = row.userid;
+          res.status(200).send({ userId: row.userid, role: row.role });
           
  
           
