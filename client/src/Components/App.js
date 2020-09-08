@@ -36,9 +36,9 @@ function App() {
                 updateTitle={updateTitle}
               />
             </Route>
-            <PrivateRoute component={Home} path="/home"/>
+            <PrivateRoute component={Home} path="/home" />
 
-            <PrivateRoute component={DataUpload} path="/dataUpload"/>       
+            <PrivateRoute component={DataUpload} path="/dataUpload" />
           </Switch>
           <AlertComponent
             errorMessage={errorMessage}

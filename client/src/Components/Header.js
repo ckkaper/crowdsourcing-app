@@ -1,5 +1,5 @@
 import React from "react";
-import  Navbar from "react-bootstrap/NavBar";
+import Navbar from "react-bootstrap/NavBar";
 import Nav from "react-bootstrap/Nav";
 
 function Header(props) {
@@ -15,8 +15,7 @@ function Header(props) {
           </Nav>
         </Navbar>
       ) : (
-        <Navbar bg="dark" variant="dark">    
-      </Navbar>
+        <Navbar bg="dark" variant="dark"></Navbar>
       )}
     </>
   );

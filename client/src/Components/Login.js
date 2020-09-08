@@ -37,11 +37,11 @@ function LoginForm(props) {
       .then(function (response) {
         console.log(response);
         if (response.status === 200) {
-          console.log('response: ');
+          console.log("response: ");
           console.log(response);
-          sessionStorage.setItem('userId', response.data.userid)
-          sessionStorage.setItem('role', response.data.role)
-         
+          sessionStorage.setItem("userId", response.data.userid);
+          sessionStorage.setItem("role", response.data.role);
+
           setState((prevState) => ({
             ...prevState,
             successMessage: "Login successful. Redirecting to home page..",
