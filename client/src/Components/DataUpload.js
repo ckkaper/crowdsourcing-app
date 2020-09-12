@@ -41,6 +41,7 @@ function DataUpload() {
     formData.append("title", title);
     formData.append("file", file);
     formData.append("locations", restrictedLocationsO);
+    formData.append("userId",sessionStorage.getItem("userId"));
 
     submitForm("multipart/form-data", formData, (msg) => console.log(msg));
   }

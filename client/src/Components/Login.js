@@ -39,7 +39,7 @@ function LoginForm(props) {
         if (response.status === 200) {
           console.log("response: ");
           console.log(response);
-          sessionStorage.setItem("userId", response.data.userid);
+          sessionStorage.setItem("userId", response.data.userId);
           sessionStorage.setItem("role", response.data.role);
 
           setState((prevState) => ({

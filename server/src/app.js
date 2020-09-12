@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const crypto = require("crypto");
 const fileUpload = require("express-fileupload");
+const JSONstream = require("JSONStream");
+const es = require("event-stream");
 
 const app = express();
 
@@ -20,6 +22,15 @@ const createUserId = (email, password) => {
   const encrypted = cipher.update(email, "utf8", "hex") + cipher.final("hex");
   return encrypted;
 };
+
+const getCoordinates = (coordinate) => {
+  return coordinate / 1e7;
+}
+
+const getTimestamp = (timestamp) => {
+  const date = new Date()
+  return date.toISOString(timestamp);
+}
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -106,15 +117,37 @@ app.post("/upload", async (req, res, next) => {
         message: "No file uploaded",
       });
     } else {
- 
+      //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
       let avatar = req.files.file;
+      const userId = req.body.userId;
       console.log("form data");
       console.log(req.body.name);
       console.log(req.body.locations);
       console.log(req.body.title);
+      console.log(req.body.userId);
 
  
-      avatar.mv("./uploads/" + avatar.name);
+      await avatar.mv("../uploads/" + avatar.name);
+      const parser = JSONstream.parse("locations.*");
+      console.log(avatar.name);
+      const stream = await  fs.createReadStream("../uploads/"+avatar.name, {encoding: 'utf8'});
+      stream.pipe(parser).pipe(es.mapSync((data) => {
+        const latitude = getCoordinates(data.latitudeE7);
+        const longitude = getCoordinates(data.longitudeE7);
+        const timestamp = getTimestamp(data.timestampMs);
+        const activityTimestamp = data.activity ? data.activity[0].timestamp : null;
+        const activityType = data.activity ? data.activity[0].activity[0].type : null;
+  
+        connection.query(`INSERT INTO records (userId, timestamp, latitude, longitude, activityType, activityTimestamp) VALUES 
+        ("${userId}", "${timestamp}", "${latitude}", "${longitude}", "${activityType}", "${activityTimestamp}")`,
+        (error)=> {
+          if (error) {
+            console.log("unable to insert record");
+            throw error;
+          }
+        })
+      }));
+ 
 
       //send response
       res.send({
