@@ -4,7 +4,7 @@ import LoginForm from "./Login";
 import RegistrationForm from "./Register";
 import Header from "./Header";
 import Home from "./Home";
-import DataUpload from "./DataUpload";
+import DataUpload from "./User/DataUpload";
 import PrivateRoute from "./PrivateRoute";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AlertComponent from "./AlertComponent";

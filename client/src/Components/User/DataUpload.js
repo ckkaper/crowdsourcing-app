@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { MyMap } from "./Map";
+import { MyMap } from "../Map";
 import axios from "axios";
 
-import { API_BASE_URL } from "../Constants/apiConstants";
+import { API_BASE_URL } from "../../Constants/apiConstants";
 
 function submitForm(contentType, data, setResponse) {
   axios({
@@ -41,7 +41,7 @@ function DataUpload() {
     formData.append("title", title);
     formData.append("file", file);
     formData.append("locations", restrictedLocationsO);
-    formData.append("userId",sessionStorage.getItem("userId"));
+    formData.append("userId", sessionStorage.getItem("userId"));
 
     submitForm("multipart/form-data", formData, (msg) => console.log(msg));
   }
