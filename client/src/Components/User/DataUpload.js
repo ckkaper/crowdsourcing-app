@@ -3,6 +3,7 @@ import { MyMap } from "../Map";
 import axios from "axios";
 
 import { API_BASE_URL } from "../../Constants/apiConstants";
+import { updateTypeLiteralNode } from "typescript";
 
 function submitForm(contentType, data, setResponse) {
   axios({
@@ -23,9 +24,12 @@ function submitForm(contentType, data, setResponse) {
 }
 
 let restrictedLocationsO = [];
-function DataUpload() {
+function DataUpload(props) {
   const [restrictedLocations, addRestrictedLocation] = useState();
 
+  useEffect(() => {
+    props.updateTitle("DataUpload");
+  });
   const appendLocation = (location) => {
     addRestrictedLocation(location);
     console.log(location);

@@ -8,10 +8,14 @@ import { createImportSpecifier } from "typescript";
 function Dashboard() {
   const [score, setScore] = useState({ score: [] });
   const [yearScore, setYearScore] = useState([]);
+  const [lastUplaod, setLastUpload] = useState("");
+  const [firstRecord, setFirstRecord] = useState("");
+  const [lastRecord, setLastRecord] = useState("");
   const payload = { userid: sessionStorage.getItem("userId") };
   const [isLoading, setIsLoading] = useState(false);
   const [dataState, setDataState] = useState({})
   const [dataUploadedState, setDataUploadedState] = useState();
+
 
   let yearData;
 
@@ -20,19 +24,36 @@ function Dashboard() {
       console.log("FETCH DATA IS CALLED");
       setIsLoading(true);
 
-      const result = await axios.post(API_BASE_URL + "userData", payload);
-      console.log(result.data.score);
-      const [lastUplaod ,lastRecord, firstRecord] = result.data.score.slice(14,16)
-      console.log(lastUplaod)
-      console.log(lastRecord)
-      console.log(firstRecord)
+      const result = await axios.post(API_BASE_URL + "userData", payload);    
+      const [lastUplaod, lastRecord, firstRecord] = result.data.score.slice(
+        14,
+        16
+      );
+      setLastUpload(lastUplaod);
+      setFirstRecord(firstRecord);
+      setLastRecord(lastRecord);
+      console.log(lastUplaod);
+      console.log(lastRecord);
+      console.log(firstRecord);
 
-      const yearData = result.data.score.slice(1,13).map(element => element === null ? 0 : element);
+      const yearData = result.data.score
+        .slice(1, 13)
+        .map((element) => (element === null ? 0 : element));
       console.log(yearData);
       setScore(result.data);
-      setDataUploadedState(result.data[15]);
       setDataState({
-        labels: ["January", "February", "March", "April", "May", "June", "July","June","June","June",],
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "June",
+          "June",
+          "June",
+        ],
         datasets: [
           {
             label: "My First dataset",
@@ -63,18 +84,16 @@ function Dashboard() {
     fetchData();
   }, []);
 
-
   return (
     <>
       {!isLoading ? (
         <>
- 
-          <h3>User Score: {score.score[0]*100}</h3>
-       
+          <h3>User Score: {score.score[0] * 100}</h3>
+
           <Line data={dataState}></Line>
-      <h3>User Last Upload: {dataState[13]}</h3>
-      <h3>Last Record  {dataState[14]}</h3>
-      <h3>Last Record  {dataState[15]}</h3>
+          <h3>User Last Upload: {lastUplaod}</h3>
+          <h3>Last Record {firstRecord}</h3>
+          <h3>Last Record {lastRecord}</h3>
         </>
       ) : (
         <h1>Waiting...</h1>

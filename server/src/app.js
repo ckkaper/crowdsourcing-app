@@ -9,7 +9,26 @@ const fileUpload = require("express-fileupload");
 const JSONstream = require("JSONStream");
 const es = require("event-stream");
 const moment = require("moment");
-const { time } = require("console");
+
+function distance(lat1, lon1, lat2, lon2, unit) {
+  var radlat1 = (Math.PI * lat1) / 180;
+  var radlat2 = (Math.PI * lat2) / 180;
+  var theta = lon1 - lon2;
+  var radtheta = (Math.PI * theta) / 180;
+  var dist =
+    Math.sin(radlat1) * Math.sin(radlat2) +
+    Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist);
+  dist = (dist * 180) / Math.PI;
+  dist = dist * 60 * 1.1515;
+  if (unit == "K") {
+    dist = dist * 1.609344;
+  }
+  if (unit == "N") {
+    dist = dist * 0.8684;
+  }
+  return dist;
+}
 
 const app = express();
 
@@ -116,11 +135,13 @@ router.post("/register", (req, res, next) => {
     }
   );
 });
-
+app.post("/adminData", async (req, res, nect) => {
+  
+});
 app.post("/userData", async (req, res, next) => {
   let score = [];
   let promise = new Promise((resolve, reject) => {
-    console.log('Reading data from DB...')
+    console.log("Reading data from DB...");
     const userid = req.body.userid;
     connection.query(
       `  
@@ -372,12 +393,12 @@ SELECT MIN(timestamp) AS firstRecord FROM records WHERE userid="${userid}";
           const rowUploaded = JSON.parse(JSON.stringify(results[28]));
           const lastRecord = JSON.parse(JSON.stringify(results[29]));
           const firstRecord = JSON.parse(JSON.stringify(results[30]));
-          console.log(rowUploaded[0].uploaded)
-          console.log(lastRecord[0].lastRecord)
-          console.log(firstRecord[0].firstRecord)
+          console.log(rowUploaded[0].uploaded);
+          console.log(lastRecord[0].lastRecord);
+          console.log(firstRecord[0].firstRecord);
           score.push(rowUploaded[0].uploaded);
           score.push(lastRecord[0].lastRecord);
-          score.push(firstRecord[0].firstRecord);          
+          score.push(firstRecord[0].firstRecord);
           resolve(score);
         }
       }
@@ -432,24 +453,28 @@ app.post("/upload", async (req, res, next) => {
         es.mapSync((data) => {
           const latitude = getCoordinates(data.latitudeE7);
           const longitude = getCoordinates(data.longitudeE7);
-          const timestamp = getTimestamp(data.timestampMs);
-          const activityTimestamp = data.activity
-            ? getTimestamp(data.activity[0].timestampMs)
-            : null;
-          const activityType = data.activity
-            ? data.activity[0].activity[0].type
-            : null;
+          const distance = distance(latitude, longitude, 38.230462, 21.75315,"K");
+          console.log(distance);
+          if (distance > 10) {
+            const timestamp = getTimestamp(data.timestampMs);
+            const activityTimestamp = data.activity
+              ? getTimestamp(data.activity[0].timestampMs)
+              : null;
+            const activityType = data.activity
+              ? data.activity[0].activity[0].type
+              : null;
 
-          connection.query(
-            `INSERT INTO records (userId, timestamp, latitude, longitude, activityType, activityTimestamp) VALUES 
+            connection.query(
+              `INSERT INTO records (userId, timestamp, latitude, longitude, activityType, activityTimestamp) VALUES 
         ("${userId}", "${timestamp}", "${latitude}", "${longitude}", "${activityType}", "${activityTimestamp}")`,
-            (error) => {
-              if (error) {
-                console.log("unable to insert record");
-                throw error;
+              (error) => {
+                if (error) {
+                  console.log("unable to insert record");
+                  throw error;
+                }
               }
-            }
-          );
+            );
+          }
         })
       );
 

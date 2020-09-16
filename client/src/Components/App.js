@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import LoginForm from "./Login";
 import RegistrationForm from "./Register";
@@ -9,10 +9,16 @@ import PrivateRoute from "./PrivateRoute";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AlertComponent from "./AlertComponent";
 import Dashboard from "./User/Dashboard";
+import AdminDashboard from "./Admin/AdminDashboard";
 
 function App() {
-  const [title, updateTitle] = useState(null);
+  console.log("App component");
+  const [title, updateTitle] = useState("Home");
   const [errorMessage, updateErrorMessage] = useState(null);
+
+  useEffect(() => {
+    updateTitle("Home")
+  },[]);
   return (
     <Router>
       <div className="App">
@@ -39,7 +45,12 @@ function App() {
             </Route>
             <PrivateRoute component={Home} path="/home" />
             <PrivateRoute component={Dashboard} path="/UserDashboard" />
-            <PrivateRoute component={DataUpload} path="/dataUpload" />
+            <PrivateRoute path="/dataUpload">
+              <DataUpload updateTitle={updateTitle} />
+            </PrivateRoute>
+            <PrivateRoute path="/AdminDashboard">
+              <AdminDashboard updateTitle={updateTitle} />
+            </PrivateRoute>
           </Switch>
           <AlertComponent
             errorMessage={errorMessage}

@@ -12,6 +12,8 @@ const config = {
 };
 
 function LoginForm(props) {
+  console.log("login component");
+  // props.updateTitle("Login");
   const [state, setState] = useState({
     email: "",
     password: "",
