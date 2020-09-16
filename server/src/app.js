@@ -27,20 +27,19 @@ const createUserId = (email, password) => {
 
 const getCoordinates = (coordinate) => {
   return coordinate / 1e7;
-}
+};
 
 const getTimestamp = (timestamp) => {
   try {
-    return moment.unix(timestamp/1000).format("YYYY-MM-DD HH:mm:ss");
-    
+    return moment.unix(timestamp / 1000).format("YYYY-MM-DD HH:mm:ss");
+
     // return date = new Date(timestamp).toISOString()
-    
   } catch (err) {
     console.log(err);
   }
- 
+
   // return date.toISOString(timestamp);
-}
+};
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -77,7 +76,6 @@ router.post("/login", (req, res, next) => {
   connection.query(
     `SELECT * FROM persons WHERE username="${username}" AND password="${hashedPassword}"`,
     (errors, results) => {
-      console.log("here");
       if (results.length > 0) {
         const row = JSON.parse(JSON.stringify(results[0]));
         console.log(row.userid);
@@ -119,93 +117,282 @@ router.post("/register", (req, res, next) => {
   );
 });
 
-app.post("/userData",(req, res, next) => {
-  const userid = req.body.userid; 
-
-  connection.query(`
-  SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}"
-AND timestamp <= "${moment().subtract(0,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(1,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(1,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(2,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(2,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(3,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(3,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(4,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(4,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(5,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(5,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(6,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(6,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(7,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(7,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(8,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(8,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(9,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(9,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(10,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(10,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(11,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(11,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(13,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(13,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}"
-AND timestamp <= "${moment().subtract(0,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(1,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(1,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(2,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(2,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(3,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(3,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(4,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(4,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(5,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(5,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(6,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(6,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(7,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(7,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(8,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(8,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(9,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(9,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(10,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(10,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(11,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(11,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(13,'Month').utc().format('YYYY-MM-DD')}";
-SELECT * FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
-AND timestamp <= "${moment().subtract(12,'Month').utc().format('YYYY-MM-DD')}" AND timestamp >= "${moment().subtract(13,'Month').utc().format('YYYY-MM-DD')}";`,  
-  
-  (error,results) => {
-    if (error) {
-      console.log(error);
-      throw error;
-    } else {
-      let score = [];
-      let oneScore;
-
-      for (i=0; i<15; i++) {
-        oneScore = results[i+15].length !== 0 ? results[i].length/results[i+15].length : null
-        console.log(results[i].length);
-        console.log(results[i+15].length);
-        console.log(oneScore);
-        score.push(oneScore);
+app.post("/userData", async (req, res, next) => {
+  let score = [];
+  let promise = new Promise((resolve, reject) => {
+    console.log('Reading data from DB...')
+    const userid = req.body.userid;
+    connection.query(
+      `  
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}"
+AND timestamp <= "${moment()
+        .subtract(0, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >=  "${moment()
+        .startOf("Month")
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}"
+AND timestamp <= "${moment()
+        .subtract(1, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(2, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}"
+AND timestamp <= "${moment()
+        .subtract(2, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(3, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(3, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(4, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(4, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(5, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(5, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(6, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(6, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(7, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(7, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(8, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(8, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(9, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(9, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(10, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(10, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(11, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(11, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(12, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(12, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(13, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(13, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(14, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}"; 
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}"
+AND timestamp <= "${moment()
+        .subtract(0, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >=  "${moment()
+        .startOf("Month")
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(1, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(2, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(2, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(3, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(3, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(4, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(4, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(5, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(5, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(6, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(6, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(7, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(7, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(8, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(8, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(9, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(9, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(10, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(10, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(11, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(11, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(12, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(12, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(13, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT COUNT(*) AS count FROM records WHERE activityType IN ("ON_BICYCLE","ON_FOOT","RUNNING","WALKING","IN_VEHICLE") AND userid="${userid}" 
+AND timestamp <= "${moment()
+        .subtract(12, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}" AND timestamp >= "${moment()
+        .subtract(13, "Month")
+        .utc()
+        .format("YYYY-MM-DD")}";
+SELECT uploaded FROM persons WHERE userid="${userid}";
+SELECT MAX(timestamp) AS lastRecord FROM records WHERE userid="${userid}";
+SELECT MIN(timestamp) AS firstRecord FROM records WHERE userid="${userid}";
+`,
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(404);
+          reject(error);
+          throw error;
+        } else {
+          let oneScore;
+          let totalActivity;
+          let bodyActivity;
+          for (i = 0; i < 14; i++) {
+            bodyActivity = JSON.parse(JSON.stringify(results[i]));
+            totalActivity = JSON.parse(JSON.stringify(results[i + 14]));
+            oneScore =
+              totalActivity[0].count !== 0
+                ? bodyActivity[0].count / totalActivity[0].count
+                : null;
+            score.push(oneScore);
+          }
+          const rowUploaded = JSON.parse(JSON.stringify(results[28]));
+          const lastRecord = JSON.parse(JSON.stringify(results[29]));
+          const firstRecord = JSON.parse(JSON.stringify(results[30]));
+          console.log(rowUploaded[0].uploaded)
+          console.log(lastRecord[0].lastRecord)
+          console.log(firstRecord[0].firstRecord)
+          score.push(rowUploaded[0].uploaded);
+          score.push(lastRecord[0].lastRecord);
+          score.push(firstRecord[0].firstRecord);          
+          resolve(score);
+        }
       }
-      console.log(score)   
-      res.send("OK");
+    );
+  });
+  await promise.then(
+    () => {
+      console.log("DB read successfully");
+      res.status(200).send({ score });
+    },
+    (err) => {
+      console.log("Failed to read DB");
+      res.status(404).send(err);
     }
-    
-   
-
-  })
-  
-
+  );
 });
 
 app.post("/upload", async (req, res, next) => {
@@ -224,29 +411,47 @@ app.post("/upload", async (req, res, next) => {
       console.log(req.body.locations);
       console.log(req.body.title);
       console.log(req.body.userId);
-      
+
       // next()
       await avatar.mv("../uploads/" + avatar.name);
       const parser = JSONstream.parse("locations.*");
-      console.log(avatar.name);
-      const stream = await  fs.createReadStream("../uploads/"+avatar.name, {encoding: 'utf8'});
-      stream.pipe(parser).pipe(es.mapSync((data) => {
-        const latitude = getCoordinates(data.latitudeE7);
-        const longitude = getCoordinates(data.longitudeE7);
-        const timestamp = getTimestamp(data.timestampMs);
-        const activityTimestamp = data.activity ? getTimestamp(data.activity[0].timestamp) : null;
-        const activityType = data.activity ? data.activity[0].activity[0].type : null;
-  
-        connection.query(`INSERT INTO records (userId, timestamp, latitude, longitude, activityType, activityTimestamp) VALUES 
-        ("${userId}", "${timestamp}", "${latitude}", "${longitude}", "${activityType}", "${activityTimestamp}")`,
-        (error)=> {
-          if (error) {
-            console.log("unable to insert record");
-            throw error;
+      const uploadTimestamp = getTimestamp(moment().valueOf());
+      connection.query(
+        `UPDATE persons SET uploaded="${uploadTimestamp}" WHERE userid="${userId}"`,
+        (errors) => {
+          if (errors) {
+            console.log(errors);
+            throw errors;
           }
+        }
+      );
+      const stream = await fs.createReadStream("../uploads/" + avatar.name, {
+        encoding: "utf8",
+      });
+      stream.pipe(parser).pipe(
+        es.mapSync((data) => {
+          const latitude = getCoordinates(data.latitudeE7);
+          const longitude = getCoordinates(data.longitudeE7);
+          const timestamp = getTimestamp(data.timestampMs);
+          const activityTimestamp = data.activity
+            ? getTimestamp(data.activity[0].timestampMs)
+            : null;
+          const activityType = data.activity
+            ? data.activity[0].activity[0].type
+            : null;
+
+          connection.query(
+            `INSERT INTO records (userId, timestamp, latitude, longitude, activityType, activityTimestamp) VALUES 
+        ("${userId}", "${timestamp}", "${latitude}", "${longitude}", "${activityType}", "${activityTimestamp}")`,
+            (error) => {
+              if (error) {
+                console.log("unable to insert record");
+                throw error;
+              }
+            }
+          );
         })
-      }));
- 
+      );
 
       //send response
       res.send({

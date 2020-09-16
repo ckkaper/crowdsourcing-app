@@ -8,6 +8,7 @@ import DataUpload from "./User/DataUpload";
 import PrivateRoute from "./PrivateRoute";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AlertComponent from "./AlertComponent";
+import Dashboard from "./User/Dashboard";
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -37,7 +38,7 @@ function App() {
               />
             </Route>
             <PrivateRoute component={Home} path="/home" />
-
+            <PrivateRoute component={Dashboard} path="/UserDashboard" />
             <PrivateRoute component={DataUpload} path="/dataUpload" />
           </Switch>
           <AlertComponent
