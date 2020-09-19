@@ -10,6 +10,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AlertComponent from "./AlertComponent";
 import Dashboard from "./User/Dashboard";
 import AdminDashboard from "./Admin/AdminDashboard";
+import DeleteData from "./Admin/DeleteData";
+import ExportData from "./Admin/ExportData";
 
 function App() {
   console.log("App component");
@@ -17,8 +19,8 @@ function App() {
   const [errorMessage, updateErrorMessage] = useState(null);
 
   useEffect(() => {
-    updateTitle("Home")
-  },[]);
+    updateTitle("Home");
+  }, []);
   return (
     <Router>
       <div className="App">
@@ -47,6 +49,12 @@ function App() {
             <PrivateRoute component={Dashboard} path="/UserDashboard" />
             <PrivateRoute path="/dataUpload">
               <DataUpload updateTitle={updateTitle} />
+            </PrivateRoute>
+            <PrivateRoute path="/deleteData">
+              <DeleteData updateTitle={updateTitle} />
+            </PrivateRoute>
+            <PrivateRoute path="/exportdata">
+              <ExportData updateTitle={updateTitle} />
             </PrivateRoute>
             <PrivateRoute path="/AdminDashboard">
               <AdminDashboard updateTitle={updateTitle} />

@@ -20,8 +20,8 @@ function Header(props) {
                   <Nav className="mr-auto">
                     <Nav.Link href="/AdminDashboard">Admin Dashboard</Nav.Link>
                     <Nav.Link href="">Map</Nav.Link>
-                    <Nav.Link href="">Delete Data</Nav.Link>
-                    <Nav.Link href="">Export Data</Nav.Link>
+                    <Nav.Link href="/DeleteData">Delete Data</Nav.Link>
+                    <Nav.Link href="/ExportData">Export Data</Nav.Link>
                   </Nav>
                 ),
                 user: (

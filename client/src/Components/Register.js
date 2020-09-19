@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { EROFS } from "constants";
 
 function RegistrationForm(props) {
-  const passwordChecker = (password,props) => {
+  const passwordChecker = (password, props) => {
     let errors = [];
     if (password.length < 8) {
       errors.push("Your password must be at least 8 characters");
@@ -94,11 +94,11 @@ function RegistrationForm(props) {
   const handleSubmitClick = (e) => {
     e.preventDefault();
     // if (passwordChecker(state.password,props)) {
-      if (state.password === state.confirmPassword) {
-        sendDetailsToServer();
-      } else {
-        props.showError("Passwords do not match");
-      }
+    if (state.password === state.confirmPassword) {
+      sendDetailsToServer();
+    } else {
+      props.showError("Passwords do not match");
+    }
     // }
   };
   return (

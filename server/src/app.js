@@ -10,7 +10,7 @@ const JSONstream = require("JSONStream");
 const es = require("event-stream");
 const moment = require("moment");
 
-function distance(lat1, lon1, lat2, lon2, unit) {
+function coordDistance(lat1, lon1, lat2, lon2, unit) {
   var radlat1 = (Math.PI * lat1) / 180;
   var radlat2 = (Math.PI * lat2) / 180;
   var theta = lon1 - lon2;
@@ -30,7 +30,10 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   return dist;
 }
 
+
 const app = express();
+
+
 
 const router = express.Router({ mergeParams: true });
 const port = 3001;
@@ -135,9 +138,115 @@ router.post("/register", (req, res, next) => {
     }
   );
 });
-app.post("/adminData", async (req, res, nect) => {
-  
-});
+
+app.post("/deleteData", () => {
+  // connection.query(`DELETE * FROM records; DELETE * FROM persons`, (errors) => {
+  //   if (errors) {
+  //     console.log(errors)
+  //     res.send(500).send(errors);
+  //   } else {
+  //     res.send(200);
+  //   }
+  // });
+})
+
+app.post("/exportData",() => {
+
+})
+app.get("/adminData", async (req, res, nect) => {
+  let data = []; 
+  let readDatabase = new Promise((resolve, reject) => {
+    console.log("Reading data from DB...");
+
+    connection.query(`
+    SELECT COUNT(*) AS count FROM records WHERE activityType!="${'null'}";
+    SELECT activityType,COUNT(*) as count FROM records WHERE activityType!="${'null'}" GROUP BY activityType ORDER BY count DESC;
+    SELECT userid,COUNT(*) as count FROM records WHERE activityType!="${'null'}" GROUP BY userid ORDER BY count DESC;
+    SELECT MONTH(timestamp) AS month, COUNT(*) AS count FROM records WHERE activityType!="${'null'}" GROUP BY month ORDER BY month ASC;
+    SELECT DAYOFWEEK(timestamp) AS day, COUNT(*) AS count FROM records WHERE activityType!="${'null'}" GROUP BY day ORDER BY day ASC;
+    SELECT HOUR(timestamp) AS hour, COUNT(*) AS count FROM records WHERE activityType!="${'null'}" GROUP BY hour ORDER BY hour ASC;
+    SELECT YEAR(timestamp) AS year, COUNT(*) AS count FROM records WHERE activityType!="${'null'}" GROUP BY year ORDER BY year ASC;
+    SELECT userid, username FROM persons;
+     `, async (errors, result) => {
+      if (errors) {
+        reject(errors);
+      } else {
+        const results = JSON.parse(JSON.stringify(result));
+        const totalRecords = results[0][0].count;   
+        // const users = results[7];  
+       
+        const activityDist = results[1].map((item) => {
+          return {activityType: item.activityType, count: item.count/totalRecords}
+        });  
+        let array = [];    
+        const users = results[7].map((item) => {
+          return Object.values(item);
+        } ).flat();
+        console.log('typeof users');
+        console.log(typeof(users));
+        console.log('users');
+        console.log(users)
+         const userDist = results[2].map((item) => {   
+          const usernameIndex = users.indexOf(item.userid) + 1;
+          return {userid: users[usernameIndex], count: item.count/totalRecords}
+        });
+        const monthDist = results[3].map((item) => {
+          return {month: item.month, count: item.count/totalRecords}
+        });
+        const weekDayDist = results[4].map((item) => {
+          return {day: item.day, count: item.count/totalRecords}
+        });
+        const hourDist = results[5].map((item) => {
+          return {hour: item.hour, count: item.count/totalRecords}
+        });
+        const yearDist = results[6].map((item) => {
+          return {year: item.year, count: item.count/totalRecords}
+        });
+
+        // console.log(results)
+        data.push(activityDist)
+        console.log("userdist")
+        console.log(userDist)
+        data.push(userDist)
+        console.log("monthDist");
+        console.log(monthDist)
+        data.push(monthDist)
+        data.push(weekDayDist)
+        data.push(hourDist)
+        data.push(yearDist)
+        resolve(data)       
+      }      
+    });   
+  });
+
+  await readDatabase.then(() => {
+    console.log('successfully read from Database');
+    res.status(200).send({data});
+  });
+},() => {res.status(400).send(errors)});
+
+app.get("/adminData/users", async (req, res, nect) => {
+  let data = []; 
+  let readDatabase = new Promise((resolve, reject) => {
+    console.log("Reading data from DB...");
+
+    connection.query(`SELECT activityType,COUNT(*) as count FROM records WHERE activityType!=${'null'} GROUP BY activityType ORDER BY count DESC`, (errors, results) => {
+      if (errors) {
+        reject(errors);
+      } else {
+        console.log(results);
+        data.push(results)   
+        resolve(data);
+      }      
+    });   
+  });
+
+  await readDatabase.then(() => {
+    res.status(200).send({data});
+  });
+},() => {res.status(400).send(errors)});
+
+
 app.post("/userData", async (req, res, next) => {
   let score = [];
   let promise = new Promise((resolve, reject) => {
@@ -390,9 +499,9 @@ SELECT MIN(timestamp) AS firstRecord FROM records WHERE userid="${userid}";
                 : null;
             score.push(oneScore);
           }
-          const rowUploaded = JSON.parse(JSON.stringify(results[28]));
-          const lastRecord = JSON.parse(JSON.stringify(results[29]));
-          const firstRecord = JSON.parse(JSON.stringify(results[30]));
+          const rowUploaded = moment(JSON.parse(JSON.stringify(results[28]))).format("YY/MM/DD HH:mm:ss");
+          const lastRecord = moment(JSON.parse(JSON.stringify(results[29]))).format("YY/MM/DD HH:mm:ss");
+          const firstRecord = moment(JSON.parse(JSON.stringify(results[30]))).format("YY/MM/DD HH:mm:ss");
           console.log(rowUploaded[0].uploaded);
           console.log(lastRecord[0].lastRecord);
           console.log(firstRecord[0].firstRecord);
@@ -453,7 +562,7 @@ app.post("/upload", async (req, res, next) => {
         es.mapSync((data) => {
           const latitude = getCoordinates(data.latitudeE7);
           const longitude = getCoordinates(data.longitudeE7);
-          const distance = distance(latitude, longitude, 38.230462, 21.75315,"K");
+          const distance = coordDistance(latitude, longitude, 38.230462, 21.75315,"K");
           console.log(distance);
           if (distance > 10) {
             const timestamp = getTimestamp(data.timestampMs);

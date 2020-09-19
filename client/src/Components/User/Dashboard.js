@@ -13,9 +13,8 @@ function Dashboard() {
   const [lastRecord, setLastRecord] = useState("");
   const payload = { userid: sessionStorage.getItem("userId") };
   const [isLoading, setIsLoading] = useState(false);
-  const [dataState, setDataState] = useState({})
+  const [dataState, setDataState] = useState({});
   const [dataUploadedState, setDataUploadedState] = useState();
-
 
   let yearData;
 
@@ -24,7 +23,7 @@ function Dashboard() {
       console.log("FETCH DATA IS CALLED");
       setIsLoading(true);
 
-      const result = await axios.post(API_BASE_URL + "userData", payload);    
+      const result = await axios.post(API_BASE_URL + "userData", payload);
       const [lastUplaod, lastRecord, firstRecord] = result.data.score.slice(
         14,
         16
