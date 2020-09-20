@@ -93,13 +93,13 @@ function RegistrationForm(props) {
   };
   const handleSubmitClick = (e) => {
     e.preventDefault();
-    // if (passwordChecker(state.password,props)) {
+    if (passwordChecker(state.password,props)) {
     if (state.password === state.confirmPassword) {
       sendDetailsToServer();
     } else {
       props.showError("Passwords do not match");
     }
-    // }
+    }
   };
   return (
     <div className="card col-12 col-lg-4 login-card mt-2 hv-center">

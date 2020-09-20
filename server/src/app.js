@@ -8,7 +8,9 @@ const crypto = require("crypto");
 const fileUpload = require("express-fileupload");
 const JSONstream = require("JSONStream");
 const es = require("event-stream");
+const fastCsv = require("fast-csv");
 const moment = require("moment");
+var parser = require('xml2json');
 
 function coordDistance(lat1, lon1, lat2, lon2, unit) {
   var radlat1 = (Math.PI * lat1) / 180;
@@ -150,7 +152,81 @@ app.post("/deleteData", () => {
   // });
 })
 
-app.post("/exportData",() => {
+app.get("/exportData",(req, res) => {
+  console.log('In export data component')
+  connection.query("SELECT * FROM records; SELECT * FROM persons;", 
+  (errors, results) => {
+    if (errors) {
+      res.status(500).send("Internal server error")
+      throw errors;      
+    } else {
+      const fileType = req.body.fileType;
+      const filePath = '/';
+      const fileName = `exported_data.${fileType}`;
+      // File options
+      const options = {
+        headers: {
+            'x-timestamp': Date.now(),
+            'x-sent': true,
+            'content-disposition': "attachment; filename=" + fileName, // gets ignored
+            'content-type': "text/csv"
+        }
+    }
+
+      switch(req.body.fileType) {
+        case 'json':
+          {
+            const json = JSON.stringify(results);           
+            fs.writeFileSync(fileName, json, (error, success) => {
+              if (error) {
+                console.log(error);
+                throw error
+              } else {
+                console.log("successfully writen data");
+              }
+            });
+            
+          }
+        case 'csv':
+          {
+            const ws = fs.createWriteStream(fileName);
+            const jsonData = JSON.parse(JSON.stringify(results));            
+            fastCsv.write(jsonData, { headers: true})
+            .on("finish", () => {
+              console.log("exported File created successfully");
+            }).pipe(ws);
+         
+          }
+        case 'xml': {
+          const data = JSON.stringify(results);
+          const xml = parser.toXml(data);            
+          fs.writeFileSync(fileName, xml, (error, success) => {
+            if (error) {
+              console.log(error);
+              throw error
+            } else {
+              console.log("successfully writen data");
+            }
+          });
+        }
+  
+        
+      }
+      try {
+        res.download(
+            filePath,
+            fileName,
+            options
+        );
+        console.log("File sent successfully!");
+    }
+    catch (error) {
+        console.error("File could not be sent!");
+        throw error;
+    }
+    }
+
+  })  
 
 })
 app.get("/adminData", async (req, res, nect) => {
@@ -499,22 +575,23 @@ SELECT MIN(timestamp) AS firstRecord FROM records WHERE userid="${userid}";
                 : null;
             score.push(oneScore);
           }
-          const rowUploaded = moment(JSON.parse(JSON.stringify(results[28]))).format("YY/MM/DD HH:mm:ss");
-          const lastRecord = moment(JSON.parse(JSON.stringify(results[29]))).format("YY/MM/DD HH:mm:ss");
-          const firstRecord = moment(JSON.parse(JSON.stringify(results[30]))).format("YY/MM/DD HH:mm:ss");
-          console.log(rowUploaded[0].uploaded);
-          console.log(lastRecord[0].lastRecord);
-          console.log(firstRecord[0].firstRecord);
-          score.push(rowUploaded[0].uploaded);
-          score.push(lastRecord[0].lastRecord);
-          score.push(firstRecord[0].firstRecord);
+          console.log(score);
+          // const rowUploaded = moment(JSON.parse(JSON.stringify(results[28]))).format("YY/MM/DD HH:mm:ss");
+          // const lastRecord = moment(JSON.parse(JSON.stringify(results[29]))).format("YY/MM/DD HH:mm:ss");
+          // const firstRecord = moment(JSON.parse(JSON.stringify(results[30]))).format("YY/MM/DD HH:mm:ss");
+          // console.log(rowUploaded.uploaded);
+          // console.log(lastRecord.lastRecord);
+          // console.log(firstRecord.firstRecord);
+          // score.push(rowUploaded[0].uploaded);
+          // score.push(lastRecord[0].lastRecord);
+          // score.push(firstRecord[0].firstRecord);
           resolve(score);
         }
       }
     );
   });
   await promise.then(
-    () => {
+    (score) => {
       console.log("DB read successfully");
       res.status(200).send({ score });
     },
@@ -536,6 +613,7 @@ app.post("/upload", async (req, res, next) => {
       //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
       let avatar = req.files.file;
       const userId = req.body.userId;
+      const restrictedLocations = req.body.locations;
       console.log("form data");
       console.log(req.body.name);
       console.log(req.body.locations);
@@ -563,7 +641,8 @@ app.post("/upload", async (req, res, next) => {
           const latitude = getCoordinates(data.latitudeE7);
           const longitude = getCoordinates(data.longitudeE7);
           const distance = coordDistance(latitude, longitude, 38.230462, 21.75315,"K");
-          console.log(distance);
+          console.log('restrictedLocations');
+          console.log(restrictedLocations);
           if (distance > 10) {
             const timestamp = getTimestamp(data.timestampMs);
             const activityTimestamp = data.activity

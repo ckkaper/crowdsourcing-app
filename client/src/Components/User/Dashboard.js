@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import * as moment from "moment";
 import { Line } from "react-chartjs-2";
 
 import { API_BASE_URL } from "../../Constants/apiConstants";
@@ -42,16 +43,16 @@ function Dashboard() {
       setScore(result.data);
       setDataState({
         labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "June",
-          "June",
-          "June",
+          moment().substract(1,"Month").format("MMMM"),
+          moment().substract(2,"Month").format("MMMM"),,
+          moment().substract(3,"Month").format("MMMM"),,
+          moment().substract(4,"Month").format("MMMM"),
+          moment().substract(5,"Month").format("MMMM"),
+          moment().substract(6,"Month").format("MMMM"),
+          moment().substract(7,"Month").format("MMMM"),
+          moment().substract(8,"Month").format("MMMM"),
+          moment().substract(9,"Month").format("MMMM"),
+          moment().substract(10,"Month").format("MMMM"),
         ],
         datasets: [
           {
@@ -91,7 +92,7 @@ function Dashboard() {
 
           <Line data={dataState}></Line>
           <h3>User Last Upload: {lastUplaod}</h3>
-          <h3>Last Record {firstRecord}</h3>
+          <h3>First Record {firstRecord}</h3>
           <h3>Last Record {lastRecord}</h3>
         </>
       ) : (

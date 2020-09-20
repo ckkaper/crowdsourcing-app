@@ -14,12 +14,24 @@ function DeleteData() {
     const submit = (event) => {
         event.preventDefault();
         confirmAlert({
-          title: 'Confirm to submit',
-          message: 'Are you sure to do this.',
+          title: 'Confirm to delete Data from Database',
+          message: 'Are you sure you want to delete all the data',
           buttons: [
             {
               label: 'Yes',
-              onClick: () => alert('Click Yes')
+              onClick: () => {
+                axios
+                  .post(API_BASE_URL + "deleteData")
+                  .then((response) => {
+                    if (response.status === 200) {
+                      alert("data deleted successfully");
+                    } else {
+                      alert("Error occured");
+                    }
+
+                  })
+                  
+              } 
             },
             {
               label: 'No',
